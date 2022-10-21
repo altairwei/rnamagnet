@@ -113,7 +113,9 @@ runCIBERSORT <- function(exprs, base, design, markergenes = intersect( rownames(
   colnames(out) <- colnames(exprs)
   rownames(out) <- colnames(base)
   out <- reshape2::melt(out)
-  out$experiment <- design[out$Var2]
+  # reshape2::melt doesn't respect options(stringsAsFactors = FALSE),
+  # so out$Var2 was coerced to character, otherwise the indices were wrong.
+  out$experiment <- design[as.character(out$Var2)]
   colnames(out) <- c("CellType","SampleID","Fraction","SampleClass")
   out
 }
